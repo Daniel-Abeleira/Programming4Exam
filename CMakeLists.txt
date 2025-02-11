@@ -225,3 +225,54 @@ elseif(WIN32)
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
   )
 endif()
+
+# Add Engine static library
+add_library(Engine STATIC
+  Engine/src/Game.cpp
+  Engine/inc/Game.h
+)
+
+# enable c++20 features for Engine
+target_compile_features(Engine PUBLIC cxx_std_20)
+
+# set include directories for Engine
+target_include_directories(Engine PRIVATE
+  ${CMAKE_SOURCE_DIR}/Engine/src
+  ${CMAKE_SOURCE_DIR}/Engine/inc
+  ${glm_SOURCE_DIR}
+)
+
+# compile at max warning level + treat warnings as errors for Engine
+target_compile_options(Engine PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
+# Add Pengo executable
+add_executable(Pengo
+  Pengo/main.cpp
+)
+
+# enable c++20 features for Pengo
+target_compile_features(Pengo PUBLIC cxx_std_20)
+
+# set include directories for Pengo
+target_include_directories(Pengo PRIVATE
+  ${CMAKE_SOURCE_DIR}/Pengo/inc
+  ${CMAKE_SOURCE_DIR}/Engine/inc
+  ${SDL2_INCLUDE_DIR}
+  ${SDL2_IMAGE_INCLUDE_DIR}
+  ${SDL2_TTF_INCLUDE_DIR}
+  ${glm_SOURCE_DIR}
+)
+
+# link Pengo with Engine and SDL2 libraries
+target_link_libraries(Pengo PUBLIC
+  Engine
+  ${SDL2_LIBRARIES}
+  ${SDL2_IMAGE_LIBRARIES}
+  ${SDL2_TTF_LIBRARIES}
+)
+
+# set Pengo as the default startup project
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Pengo)

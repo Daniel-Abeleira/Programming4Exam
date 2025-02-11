@@ -5,8 +5,8 @@ namespace engine
 	class Game
 	{
 	public:
-		Game();
-		virtual ~Game();
+		Game() = default;
+		virtual ~Game() = default;
 		void Run();
 	};
 }

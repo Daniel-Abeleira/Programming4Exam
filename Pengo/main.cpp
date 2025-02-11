@@ -1,4 +1,6 @@
 #include <SDL.h>
+#include <memory>
+#include <iostream>
 
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
@@ -10,6 +12,8 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+#include "Game.h"
+
 int main(int, char* [])
 {
 #if __EMSCRIPTEN__
@@ -20,7 +24,15 @@ int main(int, char* [])
 		data_location = "../Data/";
 #endif
 
-
-
+	std::unique_ptr<engine::Game> game = std::make_unique<engine::Game>();
+	try
+	{
+		game->Run();
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 	return EXIT_SUCCESS;
 }

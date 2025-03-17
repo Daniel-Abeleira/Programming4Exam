@@ -1,14 +1,14 @@
-﻿#pragma once
+#pragma once
 #include <filesystem>
 #include <string>
 #include <memory>
 #include <map>
 #include "Singleton.h"
 
-namespace dae
+namespace engine
 {
-	class Texture2D;
 	class Font;
+	class Texture2D;
 	class ResourceManager final : public Singleton<ResourceManager>
 	{
 	public:
@@ -18,12 +18,12 @@ namespace dae
 	private:
 		friend class Singleton<ResourceManager>;
 		ResourceManager() = default;
-		std::filesystem::path m_dataPath;
+		std::filesystem::path data_path;
 
 		void UnloadUnusedResources();
 
-		std::map<std::string, std::shared_ptr<Texture2D>> m_loadedTextures;
-		std::map<std::pair<std::string, uint8_t>, std::shared_ptr<Font>> m_loadedFonts;
+		std::map<std::string, std::shared_ptr<Texture2D>> loaded_textures;
+		std::map<std::pair<std::string, uint8_t>, std::shared_ptr<Font>> loaded_fonts;
 
 	};
 }

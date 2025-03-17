@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <memory>
 #include <iostream>
+#include "SceneManager.h"
 
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
@@ -13,6 +14,7 @@
 namespace fs = std::filesystem;
 
 #include "Game.h"
+#include "SceneBuilder.h"
 
 int main(int, char* [])
 {
@@ -24,9 +26,11 @@ int main(int, char* [])
 		data_location = "../Data/";
 #endif
 
-	std::unique_ptr<engine::Game> game = std::make_unique<engine::Game>();
+	std::unique_ptr<engine::Game> game = std::make_unique<engine::Game>("Pengo", data_location.string());
 	try
 	{
+		SceneBuilder scene_builder;
+		scene_builder.BuildScenes(*game);
 		game->Run();
 	}
 	catch (const std::exception& e)

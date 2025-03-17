@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include "Singleton.h"
 
-namespace dae
+namespace engine
 {
 	class Texture2D;
 	/**
@@ -10,9 +10,9 @@ namespace dae
 	 */
 	class Renderer final : public Singleton<Renderer>
 	{
-		SDL_Renderer* m_renderer{};
-		SDL_Window* m_window{};
-		SDL_Color m_clearColor{};	
+		SDL_Renderer* renderer{};
+		SDL_Window* window{};
+		SDL_Color clear_color{};
 	public:
 		void Init(SDL_Window* window);
 		void Render() const;
@@ -23,8 +23,9 @@ namespace dae
 
 		SDL_Renderer* GetSDLRenderer() const;
 
-		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
-		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
+		const SDL_Color& GetBackgroundColor() const { return clear_color; }
+		void SetBackgroundColor(const SDL_Color& color) { clear_color = color; }
 	};
-}
 
+
+}

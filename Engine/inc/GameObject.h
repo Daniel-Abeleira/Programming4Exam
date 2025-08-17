@@ -13,8 +13,11 @@ namespace engine
 	public:
 		virtual void Update(float delta_time);
 		virtual void Render() const; 
+		virtual void LateUpdate();
+		virtual void FixedUpdate();
 
 		void AddComponent(std::unique_ptr<Component> component);
+		Component* AddAndGetComponent(std::unique_ptr<Component> component);
 
 		template <typename T>
 		T* GetComponent() const;

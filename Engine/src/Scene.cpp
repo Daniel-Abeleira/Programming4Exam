@@ -35,3 +35,19 @@ void engine::Scene::Render() const
 		object->Render();
 	}
 }
+
+void engine::Scene::FixedUpdate()
+{
+	for (auto& object : objects)
+	{
+		object->FixedUpdate();
+	}
+}
+
+void engine::Scene::LateUpdate()
+{
+	for (auto& object : objects)
+	{
+		object->LateUpdate();
+	}
+}

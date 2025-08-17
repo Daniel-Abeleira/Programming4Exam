@@ -16,6 +16,10 @@ namespace engine
 
 		void Update(float delta_time);
 		void Render() const;
+		void FixedUpdate();
+		void LateUpdate();
+
+		const std::string& GetName() const { return name; }
 
 		~Scene() = default;
 		explicit Scene(const std::string& name);

@@ -21,13 +21,34 @@ namespace engine
 		{
 			component->Render();
 		}
-		//const auto& pos = m_transform.GetPosition();
-		//Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
+	}
+
+	void GameObject::FixedUpdate()
+	{
+		for (const auto& component : components)
+		{
+			component->FixedUpdate();
+		}
+	}
+
+	void GameObject::LateUpdate()
+	{
+		for (const auto& component : components)
+		{
+			component->LateUpdate();
+		}
 	}
 
 	void GameObject::AddComponent(std::unique_ptr<Component> component)
 	{
 		component.get()->game_object = this;
 		components.push_back(std::move(component));
+	}
+
+	Component* GameObject::AddAndGetComponent(std::unique_ptr<Component> component)
+	{
+		component.get()->game_object = this;
+		components.push_back(std::move(component));
+		return components.back().get();
 	}
 }

@@ -47,17 +47,38 @@ engine::Game::Game(const std::string& name, const std::string& dataPath)
 {
 	PrintSDLVersion();
 
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
+	printf("%i joysticks were found.\n\n", SDL_NumJoysticks());
+	printf("The names of the joysticks are:\n");
+    // Declare the variable 'i' as a constant value before the loop to fix the error E0028  
+    const int joystickCount = SDL_NumJoysticks();  
+    for (int i = 0; i < joystickCount; i++)  
+    {  
+		std::cout << SDL_JoystickNameForIndex(i) << std::endl;
+    }
+	if (joystickCount > 0)
+	{
+		SDL_Joystick* joystick;
+
+		SDL_JoystickEventState(SDL_ENABLE);
+		joystick = SDL_JoystickOpen(0);
+	}
+	if (joystickCount > 1)
+	{
+		SDL_Joystick* joystick2;
+		SDL_JoystickEventState(SDL_ENABLE);
+		joystick2 = SDL_JoystickOpen(1);
+	}
 
 	g_window = SDL_CreateWindow(
-		"Programming 4 assignment",
+		name.c_str(),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		640,
-		480,
+		464,
+		496,
 		SDL_WINDOW_OPENGL
 	);
 	if (g_window == nullptr)
@@ -68,6 +89,8 @@ engine::Game::Game(const std::string& name, const std::string& dataPath)
 	Renderer::GetInstance().Init(g_window);
 
 	ResourceManager::GetInstance().Init(dataPath);
+
+	std::cout << "Game [" << name << "] was constructed\n";
 }
 
 engine::Game::~Game()
@@ -76,16 +99,16 @@ engine::Game::~Game()
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();
+	std::cout << "Game [" << name << "] was destroyed\n";
 }
 
 void engine::Game::Run()
 {
-	std::cout << "Game [" << name << "] is running\n";
+	std::cout << "Game [" << name << "] started running\n";
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
-	// todo: this update loop could use some work.
 	bool should_exit{ false };
 	auto lastTime = std::chrono::high_resolution_clock::now();
 	float lag{};

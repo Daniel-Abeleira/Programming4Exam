@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.26)
-project(Pengo_DanielAbeleira)
+project(Pacman_DanielAbeleira)
 include(FetchContent)
 
-set(TARGET_NAME Pengo)
+set(TARGET_NAME Pacman)
 
 # add glm
 FetchContent_Declare(
@@ -105,7 +105,7 @@ endif()
 add_library(Engine STATIC
   Engine/src/Game.cpp
   Engine/inc/Game.h
- "Engine/inc/Singleton.h" "Engine/inc/SceneManager.h" "Engine/src/SceneManager.cpp" "Engine/inc/Scene.h" "Engine/src/Scene.cpp" "Engine/inc/GameObject.h" "Engine/src/GameObject.cpp" "Engine/inc/Component.h" "Engine/src/Component.cpp" "Engine/inc/ResourceManager.h" "Engine/inc/Renderer.h" "Engine/inc/InputManager.h" "Engine/inc/Font.h" "Engine/inc/RenderComponent.h" "Engine/inc/TextComponent.h" "Engine/inc/Texture2D.h" "Engine/inc/Transform.h" "Engine/src/Font.cpp" "Engine/src/InputManager.cpp" "Engine/src/RenderComponent.cpp" "Engine/src/Renderer.cpp" "Engine/src/TextComponent.cpp" "Engine/src/Texture2D.cpp" "Engine/src/Transform.cpp" "Engine/src/ResourceManager.cpp")
+ "Engine/inc/Singleton.h" "Engine/inc/SceneManager.h" "Engine/src/SceneManager.cpp" "Engine/inc/Scene.h" "Engine/src/Scene.cpp" "Engine/inc/GameObject.h" "Engine/src/GameObject.cpp" "Engine/inc/Component.h" "Engine/src/Component.cpp" "Engine/inc/ResourceManager.h" "Engine/inc/Renderer.h" "Engine/inc/InputManager.h" "Engine/inc/Font.h" "Engine/inc/RenderComponent.h" "Engine/inc/TextComponent.h" "Engine/inc/Texture2D.h" "Engine/inc/Transform.h" "Engine/src/Font.cpp" "Engine/src/InputManager.cpp" "Engine/src/RenderComponent.cpp" "Engine/src/Renderer.cpp" "Engine/src/TextComponent.cpp" "Engine/src/Texture2D.cpp" "Engine/src/Transform.cpp" "Engine/src/ResourceManager.cpp" "Engine/inc/Command.h")
 
 # enable c++20 features for Engine
 target_compile_features(Engine PUBLIC cxx_std_20)
@@ -126,17 +126,23 @@ target_compile_options(Engine PRIVATE
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
 
-# Add Pengo executable
-add_executable(Pengo
-  Pengo/main.cpp
- "Pengo/inc/SceneBuilder.h" "Pengo/src/SceneBuilder.cpp")
+# Add Pacman executable
+add_executable(Pacman
+  Pacman/main.cpp
+   "Pacman/inc/PacmanGame.h" "Pacman/src/PacmanGame.cpp" "Pacman/inc/Pacman.h" "Pacman/src/Pacman.cpp" "Pacman/src/MainMenuManager.cpp" "Pacman/inc/GameMode.h" "Pacman/src/MainMenuManager.cpp")
 
-# enable c++20 features for Pengo
-target_compile_features(Pengo PUBLIC cxx_std_20)
+# enable c++20 features for Pacman
+target_compile_features(Pacman PUBLIC cxx_std_20)
 
-# set include directories for Pengo
-target_include_directories(Pengo PRIVATE
-  ${CMAKE_SOURCE_DIR}/Pengo/inc
+# compile at max warning level + treat warnings as errors for Engine
+target_compile_options(Pacman PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
+# set include directories for Pacman
+target_include_directories(Pacman PRIVATE
+  ${CMAKE_SOURCE_DIR}/Pacman/inc
   ${CMAKE_SOURCE_DIR}/Engine/inc
   ${SDL2_INCLUDE_DIR}
   ${SDL2_IMAGE_INCLUDE_DIR}
@@ -144,8 +150,8 @@ target_include_directories(Pengo PRIVATE
   ${glm_SOURCE_DIR}
 )
 
-# link Pengo with Engine and SDL2 libraries
-target_link_libraries(Pengo PUBLIC
+# link Pacman with Engine and SDL2 libraries
+target_link_libraries(Pacman PUBLIC
   Engine
   ${SDL2_LIBRARIES}
   ${SDL2_IMAGE_LIBRARIES}
@@ -170,5 +176,5 @@ if(WIN32)
   )
 endif()
 
-# set Pengo as the default startup project
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Pengo)
+# set Pacman as the default startup project
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Pacman)

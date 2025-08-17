@@ -13,8 +13,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-#include "Game.h"
-#include "SceneBuilder.h"
+#include "PacmanGame.h"
 
 int main(int, char* [])
 {
@@ -26,12 +25,11 @@ int main(int, char* [])
 		data_location = "../Data/";
 #endif
 
-	std::unique_ptr<engine::Game> game = std::make_unique<engine::Game>("Pengo", data_location.string());
+	std::unique_ptr<PacmanGame> game = std::make_unique<PacmanGame>(data_location.string());
 	try
 	{
-		SceneBuilder scene_builder;
-		scene_builder.BuildScenes(*game);
-		game->Run();
+		engine::SceneManager::GetInstance().LoadScene("MainMenu"); //Sets the initial scene. In the final version it will be "MainMenu" or similar.
+		game->Run(); // Full game loop all the way through to exit_called
 	}
 	catch (const std::exception& e)
 	{

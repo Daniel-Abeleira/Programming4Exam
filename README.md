@@ -1,4 +1,4 @@
-﻿# Ms Pacman clone by Daniel Abeleira
+# Ms Pacman clone by Daniel Abeleira
 ## For Programming 4 at Howest DAE.
 This repository contains both a custom-made 2D arcade engine capable of sprite rendering, animation, and input handling for a keyboard and up to one controller, as well as a Ms Pacman clone with barebones functionality using that engine as one would in a production environment. The engine employs the command pattern extensively, and the implementations of scene-loading and animations might be somewhat interesting.
 Right now only the coop mode is anywhere near playable. Ms Pacman is controlled with the arrow keys and Pacman can be moved with a controller joystick.

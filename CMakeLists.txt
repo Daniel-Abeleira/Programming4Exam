@@ -1,51 +1,9 @@
 cmake_minimum_required(VERSION 3.26)
-project(Minigin)
-
-if(EMSCRIPTEN)
-  message("Using Emscripten!")
-endif()
-
-if(EMSCRIPTEN)
-  set(TARGET_NAME minigin_web)
-  set(TARGET_PARAM )
-else()
-  set(TARGET_NAME minigin)
-  set(TARGET_PARAM WIN32)
-endif()
-
-# list source files here
-add_executable(${TARGET_NAME} ${TARGET_PARAM}
-  Minigin/Font.cpp
-  Minigin/Font.h
-  Minigin/GameObject.cpp
-  Minigin/GameObject.h
-  Minigin/InputManager.cpp
-  Minigin/InputManager.h
-  Minigin/Main.cpp
-  Minigin/Minigin.cpp
-  Minigin/Minigin.h
-  Minigin/Renderer.cpp
-  Minigin/Renderer.h
-  Minigin/ResourceManager.cpp
-  Minigin/ResourceManager.h
-  Minigin/Scene.cpp
-  Minigin/Scene.h
-  Minigin/SceneManager.cpp
-  Minigin/SceneManager.h
-  Minigin/TextObject.cpp
-  Minigin/TextObject.h
-  Minigin/Texture2D.cpp
-  Minigin/Texture2D.h
-  Minigin/Transform.cpp
-  Minigin/Transform.h
-)
-
-# enable c++20 features
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
-# set minigin as the default startup project
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
-
+project(Pacman_DanielAbeleira)
 include(FetchContent)
+
+set(TARGET_NAME Pacman)
+
 # add glm
 FetchContent_Declare(
   glm
@@ -54,10 +12,7 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
 )
 
-FetchContent_GetProperties(glm)
-if(NOT glm_POPULATED)
-  FetchContent_Populate(glm)
-endif()
+FetchContent_MakeAvailable(glm)
 
 # add SDL2
 if (WIN32)
@@ -67,17 +22,14 @@ if (WIN32)
     DOWNLOAD_NO_PROGRESS ON
     DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads 
   )
-  FetchContent_GetProperties(SDL2)
-  if(NOT SDL2_POPULATED)
-    FetchContent_Populate(SDL2)
-    set(SDL2_INCLUDE_DIR ${sdl2_SOURCE_DIR}/include)
+  FetchContent_MakeAvailable(SDL2)
+  set(SDL2_INCLUDE_DIR ${sdl2_SOURCE_DIR}/include)
   if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
     set(SDL2_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x64/SDL2.lib;${sdl2_SOURCE_DIR}/lib/x64/SDL2main.lib")
     set(SDL2_LIBRARY_DLL "${sdl2_SOURCE_DIR}/lib/x64/SDL2.dll")
   else()
     set(SDL2_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x86/SDL2.lib;${sdl2_SOURCE_DIR}/lib/x86/SDL2main.lib")
     set(SDL2_LIBRARY_DLL "${sdl2_SOURCE_DIR}/lib/x86/SDL2.dll")
-  endif()
   endif()
 
   # add SDL2_image
@@ -87,17 +39,14 @@ if (WIN32)
     DOWNLOAD_NO_PROGRESS ON
     DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
   )
-  FetchContent_GetProperties(SDL2_image)
-  if(NOT SDL2_image_POPULATED)
-    FetchContent_Populate(SDL2_image)
-    set(SDL2_IMAGE_INCLUDE_DIR ${sdl2_image_SOURCE_DIR}/include)
+  FetchContent_MakeAvailable(SDL2_image)
+  set(SDL2_IMAGE_INCLUDE_DIR ${sdl2_image_SOURCE_DIR}/include)
   if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
     set(SDL2_IMAGE_LIBRARIES "${sdl2_image_SOURCE_DIR}/lib/x64/SDL2_image.lib")
     set(SDL2_IMAGE_LIBRARY_DLL "${sdl2_image_SOURCE_DIR}/lib/x64/SDL2_image.dll")
   else()
     set(SDL2_IMAGE_LIBRARIES "${sdl2_image_SOURCE_DIR}/lib/x86/SDL2_image.lib")
     set(SDL2_IMAGE_LIBRARY_DLL "${sdl2_image_SOURCE_DIR}/lib/x86/SDL2_image.dll")
-  endif()
   endif()
 
   # add SDL2_ttf
@@ -107,10 +56,8 @@ if (WIN32)
     DOWNLOAD_NO_PROGRESS ON
     DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
   )
-  FetchContent_GetProperties(SDL2_ttf)
-  if(NOT sdl2_ttf_POPULATED)
-    FetchContent_Populate(SDL2_ttf)
-    set(SDL2_TTF_INCLUDE_DIR ${sdl2_ttf_SOURCE_DIR}/include)
+  FetchContent_MakeAvailable(SDL2_ttf)
+  set(SDL2_TTF_INCLUDE_DIR ${sdl2_ttf_SOURCE_DIR}/include)
   if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
     set(SDL2_TTF_LIBRARIES ${sdl2_ttf_SOURCE_DIR}/lib/x64/SDL2_ttf.lib)
     set(SDL2_TTF_LIBRARY_DLL "${sdl2_ttf_SOURCE_DIR}/lib/x64/SDL2_ttf.dll")
@@ -118,24 +65,8 @@ if (WIN32)
     set(SDL2_TTF_LIBRARIES ${sdl2_ttf_SOURCE_DIR}/lib/x86/SDL2_ttf.lib)
     set(SDL2_TTF_LIBRARY_DLL "${sdl2_ttf_SOURCE_DIR}/lib/x86/SDL2_ttf.dll")
   endif()
-  endif()
 
   find_package(VLD CONFIG)
-
-  # set all include directories
-  target_include_directories(${TARGET_NAME} PRIVATE
-    ${VLD_INCLUDE_DIR}
-    ${SDL2_INCLUDE_DIR} 
-    ${SDL2_IMAGE_INCLUDE_DIR} 
-    ${SDL2_TTF_INCLUDE_DIR})
-  
-  # set libraries to link with
-  target_link_libraries(${TARGET_NAME} PUBLIC
-    ${SDL2_LIBRARIES} 
-    ${SDL2_IMAGE_LIBRARIES} 
-    ${SDL2_TTF_LIBRARIES} 
-    ${VLD_LIBRARY}
-  )
 
 elseif(NOT EMSCRIPTEN)
 
@@ -168,47 +99,66 @@ elseif(NOT EMSCRIPTEN)
   set(SDL2TTF_INSTALL OFF)
   FetchContent_MakeAvailable(SDL2_ttf)
 
-  target_include_directories("${TARGET_NAME}" PUBLIC 
-    ${sdl2_SOURCE_DIR}/include
-    ${sdl2_image_SOURCE_DIR}/include
-    ${sdl2_ttf_SOURCE_DIR}
-  )
-  target_link_libraries("${TARGET_NAME}" PUBLIC 
-    SDL2::SDL2main SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf
-  )
 endif()
 
-target_include_directories(${TARGET_NAME} PRIVATE
-  ${CMAKE_SOURCE_DIR}/Minigin/
+# Add Engine static library
+add_library(Engine STATIC
+  Engine/src/Game.cpp
+  Engine/inc/Game.h
+ "Engine/inc/Singleton.h" "Engine/inc/SceneManager.h" "Engine/src/SceneManager.cpp" "Engine/inc/Scene.h" "Engine/src/Scene.cpp" "Engine/inc/GameObject.h" "Engine/src/GameObject.cpp" "Engine/inc/Component.h" "Engine/src/Component.cpp" "Engine/inc/ResourceManager.h" "Engine/inc/Renderer.h" "Engine/inc/InputManager.h" "Engine/inc/Font.h" "Engine/inc/RenderComponent.h" "Engine/inc/TextComponent.h" "Engine/inc/Texture2D.h" "Engine/inc/Transform.h" "Engine/src/Font.cpp" "Engine/src/InputManager.cpp" "Engine/src/RenderComponent.cpp" "Engine/src/Renderer.cpp" "Engine/src/TextComponent.cpp" "Engine/src/Texture2D.cpp" "Engine/src/Transform.cpp" "Engine/src/ResourceManager.cpp" "Engine/inc/Command.h")
+
+# enable c++20 features for Engine
+target_compile_features(Engine PUBLIC cxx_std_20)
+
+# set include directories for Engine
+target_include_directories(Engine PRIVATE
+  ${CMAKE_SOURCE_DIR}/Engine/src
+  ${CMAKE_SOURCE_DIR}/Engine/inc
+  ${SDL2_INCLUDE_DIR}
+  ${SDL2_IMAGE_INCLUDE_DIR}
+  ${SDL2_TTF_INCLUDE_DIR}
   ${glm_SOURCE_DIR}
 )
 
-# compile at max warning level + treat warnings as errors
-target_compile_options(${TARGET_NAME} PRIVATE
+# compile at max warning level + treat warnings as errors for Engine
+target_compile_options(Engine PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
 
-if(EMSCRIPTEN)
-  set(EMSCRIPTEN_COMPILE_FLAGS "${EMSCRIPTEN_LINK_FLAGS} -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -g")
-  set(EMSCRIPTEN_LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS} -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -g -sALLOW_MEMORY_GROWTH --preload-file \"${CMAKE_SOURCE_DIR}/Data@/\" -sSDL2_IMAGE_FORMATS=['tga','png']")
+# Add Pacman executable
+add_executable(Pacman
+  Pacman/main.cpp
+   "Pacman/inc/PacmanGame.h" "Pacman/src/PacmanGame.cpp" "Pacman/inc/Pacman.h" "Pacman/src/Pacman.cpp" "Pacman/src/MainMenuManager.cpp" "Pacman/inc/GameMode.h" "Pacman/src/MainMenuManager.cpp")
 
-  # work around https://github.com/emscripten-core/emscripten/issues/11513
-  set(EMSCRIPTEN_LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS} -fno-stack-protector")
+# enable c++20 features for Pacman
+target_compile_features(Pacman PUBLIC cxx_std_20)
 
-  # Use the Emscripten toolchain
-  set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/EmscriptenToolchain.cmake)
+# compile at max warning level + treat warnings as errors for Engine
+target_compile_options(Pacman PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
 
-  # Additional settings for Emscripten build
-  set_target_properties(${TARGET_NAME} PROPERTIES
-      COMPILE_FLAGS "${EMSCRIPTEN_COMPILE_FLAGS}"
-      LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS}"
-  )
+# set include directories for Pacman
+target_include_directories(Pacman PRIVATE
+  ${CMAKE_SOURCE_DIR}/Pacman/inc
+  ${CMAKE_SOURCE_DIR}/Engine/inc
+  ${SDL2_INCLUDE_DIR}
+  ${SDL2_IMAGE_INCLUDE_DIR}
+  ${SDL2_TTF_INCLUDE_DIR}
+  ${glm_SOURCE_DIR}
+)
 
-  # Have emscripten generate a html page too.
-  set(CMAKE_EXECUTABLE_SUFFIX ".html")
-  
-elseif(WIN32)
+# link Pacman with Engine and SDL2 libraries
+target_link_libraries(Pacman PUBLIC
+  Engine
+  ${SDL2_LIBRARIES}
+  ${SDL2_IMAGE_LIBRARIES}
+  ${SDL2_TTF_LIBRARIES}
+)
+
+if(WIN32)
   set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
 
   # add post build commands
@@ -225,3 +175,6 @@ elseif(WIN32)
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
   )
 endif()
+
+# set Pacman as the default startup project
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Pacman)
